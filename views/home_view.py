@@ -1,28 +1,37 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QTabWidget, QVBoxLayout, QWidget, QLabel
+from controllers.drive_controller import get_drive_service
+from views.tabs.clients_tab import ClientsTab
+
 
 class HomeView(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Inicio - SAV")
-        self.setGeometry(300, 300, 600, 400)
+        self.setWindowTitle("SAV - Sistema Administrativo")
+        
+        # Configurar servicio de Google Drive
+        self.drive_service = get_drive_service()
+        self.file_id = "1TyPAcHsgqsEgw7YGwHSwkzVC_uGAy3VSGEzPguKmjMk"  # ID del archivo
+        self.output_path = "utils/clientes.xlsx"
 
-        # Configuración de estilo
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f0f0f0;
-            }
-            QLabel {
-                font-size: 20px;
-                font-weight: bold;
-                color: #333333;
-            }
-        """)
-
-        # Layout y elementos
         layout = QVBoxLayout()
-        label = QLabel("¡Bienvenido a la aplicación!")
-        label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label)
 
+        # Crear widget de pestañas
+        tab_widget = QTabWidget()
+
+        # Agregar pestaña "Clientes"
+        clients_tab = ClientsTab(self.drive_service, self.file_id, self.output_path)
+        tab_widget.addTab(clients_tab, "Clientes")
+
+        # Otras pestañas (ejemplo)
+        tab_widget.addTab(self.create_tab("Propiedades"), "Propiedades")
+        tab_widget.addTab(self.create_tab("Reportes"), "Reportes")
+
+        layout.addWidget(tab_widget)
         self.setLayout(layout)
+
+    def create_tab(self, name):
+        tab = QWidget()
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel(f"Contenido de {name}"))
+        tab.setLayout(layout)
+        return tab

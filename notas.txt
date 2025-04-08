@@ -1,0 +1,9 @@
+- Para correr el proyecto desde visual
+
+$ python main.py
+
+- Para compilar el .EXE
+
+$ pyinstaller --noconfirm --onefile --windowed --add-data "assets/credentials.json;assets" main.py
+
+
